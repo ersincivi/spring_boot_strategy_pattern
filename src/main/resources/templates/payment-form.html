@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Ödeme Sistemi</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .payment-container {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            padding: 30px;
+        }
+
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #34495e;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+
+        .method-section {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 25px;
+            border-left: 4px solid #3498db;
+        }
+
+        .method-section h3 {
+            margin-top: 0;
+            color: #2c3e50;
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+
+        .method-fields {
+            display: none;
+        }
+
+        .method-fields.active {
+            display: block;
+        }
+
+        .btn {
+            background: linear-gradient(to right, #3498db, #2980b9);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 14px 20px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        .card-icons {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: -30px;
+            margin-bottom: 15px;
+        }
+
+        .card-icons img {
+            height: 30px;
+            margin-left: 5px;
+            opacity: 0.7;
+        }
+
+        @media (max-width: 480px) {
+            .payment-container {
+                padding: 20px;
+            }
+
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="payment-container">
+    <h1>Ödeme Yap</h1>
+
+    <form th:action="@{/pay}" th:object="${paymentRequest}" method="post">
+        <div class="form-group">
+            <label for="paymentMethod">Ödeme Yöntemi</label>
+            <select id="paymentMethod" th:field="*{paymentMethod}" onchange="toggleFields()">
+                <option value="">Seçiniz</option>
+                <option th:each="method : ${paymentMethods}"
+                        th:value="${method}"
+                        th:text="#{${'paymentMethods.' + method}}">Kredi Kartı</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="amount">Tutar (₺)</label>
+            <input type="number" id="amount" th:field="*{amount}" step="0.01" min="0.01" required />
+        </div>
+
+        <!-- Kredi Kartı Alanları -->
+        <div id="creditCardFields" class="method-fields">
+            <div class="method-section">
+                <h3>Kredi Kartı Bilgileri</h3>
+                <div class="card-icons">
+                    <img src="https://img.icons8.com/color/48/000000/visa.png" alt="Visa" />
+                    <img src="https://img.icons8.com/color/48/000000/mastercard.png" alt="Mastercard" />
+                </div>
+
+                <div class="form-group">
+                    <label for="cardNumber">Kart Numarası</label>
+                    <input type="text" id="cardNumber" th:field="*{cardNumber}" maxlength="19" placeholder="1234 5678 9012 3456" />
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="expiryDate">Son Kullanma</label>
+                        <input type="text" id="expiryDate" th:field="*{expiryDate}" placeholder="AA/YY" maxlength="5" />
+                    </div>
+                    <div class="form-group">
+                        <label for="cvv">CVV</label>
+                        <input type="text" id="cvv" th:field="*{cvv}" maxlength="4" placeholder="123" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PayPal Alanları -->
+        <div id="paypalFields" class="method-fields">
+            <div class="method-section">
+                <h3>PayPal Hesabı</h3>
+                <div class="form-group">
+                    <label for="email">Email Adresi</label>
+                    <input type="email" id="email" th:field="*{email}" placeholder="ornek@email.com" />
+                </div>
+                <div class="form-group">
+                    <label for="password">Şifre</label>
+                    <input type="password" id="password" th:field="*{password}" placeholder="••••••••" />
+                </div>
+            </div>
+        </div>
+
+        <!-- Havale Alanları -->
+        <div id="bankTransferFields" class="method-fields">
+            <div class="method-section">
+                <h3>Banka Havalesi</h3>
+                <div class="form-group">
+                    <label for="iban">IBAN Numarası</label>
+                    <input type="text" id="iban" th:field="*{iban}" placeholder="TRXX XXXX XXXX XXXX XXXX XXXX XX" />
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="btn">Ödemeyi Tamamla</button>
+    </form>
+</div>
+
+<script>
+    function toggleFields() {
+        const method = document.getElementById('paymentMethod').value;
+        document.querySelectorAll('.method-fields').forEach(field => {
+            field.classList.remove('active');
+        });
+
+        if(method === 'CREDIT_CARD') {
+            document.getElementById('creditCardFields').classList.add('active');
+        } else if(method === 'PAYPAL') {
+            document.getElementById('paypalFields').classList.add('active');
+        } else if(method === 'BANK_TRANSFER') {
+            document.getElementById('bankTransferFields').classList.add('active');
+        }
+    }
+
+    // Kart numarasını formatla
+    document.getElementById('cardNumber')?.addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\s/g, '').replace(/[^0-9]/gi, '');
+        let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
+        e.target.value = formattedValue;
+    });
+
+    // Son kullanma tarihini formatla
+    document.getElementById('expiryDate')?.addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\s/g, '').replace(/[^0-9]/gi, '');
+        if (value.length >= 2) {
+            value = value.substring(0, 2) + '/' + value.substring(2, 4);
+        }
+        e.target.value = value;
+    });
+
+    // Sayfa yüklendiğinde varsayılan alanları göster
+    document.addEventListener('DOMContentLoaded', function() {
+        toggleFields();
+    });
+</script>
+</body>
+</html>

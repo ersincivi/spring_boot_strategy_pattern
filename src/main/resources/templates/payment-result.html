@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Ödeme Sonucu</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .result-container {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+            font-size: 36px;
+        }
+
+        .success-icon {
+            background-color: #d4edda;
+            color: #28a745;
+        }
+
+        .error-icon {
+            background-color: #f8d7da;
+            color: #dc3545;
+        }
+
+        h1 {
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .message {
+            font-size: 18px;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+
+        .success-message {
+            color: #28a745;
+        }
+
+        .error-message {
+            color: #dc3545;
+        }
+
+        .amount {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .amount-label {
+            font-size: 14px;
+            color: #6c757d;
+            margin-bottom: 5px;
+        }
+
+        .amount-value {
+            font-size: 24px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .btn {
+            background: linear-gradient(to right, #3498db, #2980b9);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 14px 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .details {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+<div class="result-container">
+    <div th:classappend="${response.success} ? 'icon success-icon' : 'icon error-icon'">
+        <span th:if="${response.success}">✓</span>
+        <span th:unless="${response.success}">✗</span>
+    </div>
+
+    <h1 th:text="${response.success} ? 'Ödeme Başarılı!' : 'Ödeme Başarısız!'">Ödeme Sonucu</h1>
+
+    <p th:classappend="${response.success} ? 'message success-message' : 'message error-message'"
+       th:text="${response.message}">Ödeme mesajı</p>
+
+    <div class="amount">
+        <div class="amount-label">Ödenen Tutar</div>
+        <div class="amount-value" th:text="${#numbers.formatDecimal(response.amount, 1, 2)} + ' TL'">0.00 TL</div>
+    </div>
+
+    <a href="/" class="btn">Yeni Ödeme Yap</a>
+
+    <div class="details">
+        <p>İşlem No: <span th:text="${T(java.util.UUID).randomUUID()}">XXXX-XXXX-XXXX</span></p>
+        <p>Tarih: <span th:text="${#temporals.format(localDateTime, 'dd-MM-yyyy HH:mm')}"> </span></p>
+    </div>
+</div>
+</body>
+</html>
