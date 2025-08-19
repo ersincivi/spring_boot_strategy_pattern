@@ -9,5 +9,4 @@ public class StrategyPatternApplication {
     public static void main(String[] args) {
         SpringApplication.run(StrategyPatternApplication.class, args);
     }
-
 }

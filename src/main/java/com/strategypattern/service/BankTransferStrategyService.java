@@ -2,6 +2,7 @@ package com.strategypattern.service;
 
 import com.strategypattern.dto.PaymentRequest;
 import com.strategypattern.dto.PaymentResult;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 @Service
