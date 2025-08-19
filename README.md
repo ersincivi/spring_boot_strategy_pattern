@@ -1,14 +1,19 @@
+![Application Architecture](https://raw.githubusercontent.com/ersincivi/spring_boot_strategy_pattern/refs/heads/main/strategy-design-pattern.png)
+
 ## Spring Boot: Payment - Strategy Pattern
 
 English: This project is a strategy design pattern implementation developed using Spring Boot. Its purpose is to provide a better understanding of the strategy pattern.
 
 Türkçe: Bu proje, Spring Boot kullanarak geliştirilmiş bir stareteji tasarım deseni uygulamasıdır. Amacı strateji desenini daha iyi anlamayı sağlamaktır.
 
+![Screenshot](https://raw.githubusercontent.com/ersincivi/spring_boot_strategy_pattern/refs/heads/main/payment_strategy.png)
+
 ---
 ## Technologies Used
 
 * **Java 21**
 * **Spring Boot 3.5.4**
+* **Thymeleaf**
 
 ---
 ## Installation and Operation
